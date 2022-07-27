@@ -12,8 +12,27 @@ pool:
 steps:
 - task: NodeTool@0
   inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
+    versionSpec: '16.x'
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: '*.tgz'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/npm'
+  displayName: 'Copy npm package'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: 'package.json'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/npm'
+  displayName: 'Copy package.json'  
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Pipeline.Workspace)'
+    artifact: 'npm'
+    publishLocation: 'pipeline'
+    
 
 - script: |
     npm install
